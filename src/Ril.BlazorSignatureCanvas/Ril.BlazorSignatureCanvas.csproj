@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <PackageId>Ril.BlazorSignatureCanvas</PackageId>
-    <Version>0.0.5-alpha</Version>
+    <Version>0.0.6-alpha</Version>
     <PackageTags>Blazor;Javascript;Components</PackageTags>
     <Description>
       A Blazor wrapper component for the SignaturePad javascript library.
@@ -13,6 +13,10 @@
     <Authors>Ian WItham</Authors>
     <Company>ResourceWare</Company>
     <PackageReadMeFile>README.md</PackageReadMeFile>
+    <RepositoryUrl>https://github.com/ResourceWare/Ril.BlazorSignatureCanvas</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <ProjectUrl>https://resourceware.github.io/Ril.BlazorSignatureCanvas/</ProjectUrl>
+    
   </PropertyGroup>
 
   <ItemGroup>
