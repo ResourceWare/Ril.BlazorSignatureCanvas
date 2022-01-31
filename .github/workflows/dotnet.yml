@@ -16,13 +16,13 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.x
+        dotnet-version: 6.0.x
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+    #- name: Test
+    #  run: dotnet test --no-build --verbosity normal
       
     - name: Publish NuGet
       # You may pin to the exact commit or the version.
@@ -44,7 +44,7 @@ jobs:
         # Format of the git tag, [*] gets replaced with actual version
         #TAG_FORMAT: # optional, default is v*
         # API key to authenticate with NuGet server
-        NUGET_KEY: # optional
+        NUGET_KEY: ${{ secrets.NUGET_KEY }}
         # NuGet server uri hosting the packages, defaults to https://api.nuget.org
         #NUGET_SOURCE: # optional, default is https://api.nuget.org
         # Flag to toggle pushing symbols along with nuget package to the server, disabled by default
