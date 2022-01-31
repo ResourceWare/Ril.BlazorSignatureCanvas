@@ -15,7 +15,8 @@
     <PackageReadMeFile>README.md</PackageReadMeFile>
     <RepositoryUrl>https://github.com/ResourceWare/Ril.BlazorSignatureCanvas</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <ProjectUrl>https://resourceware.github.io/Ril.BlazorSignatureCanvas/</ProjectUrl>
+    <RepositoryBranch>main</RepositoryBranch>
+    <PackageProjectUrl>https://resourceware.github.io/Ril.BlazorSignatureCanvas/</PackageProjectUrl>
     
   </PropertyGroup>
 
