@@ -7,7 +7,7 @@
   "linkerEnabled": true,
   "resources": {
     "assembly": {
-      "BlazorWasm.dll": "sha256-T4+8EUXusP+iWj+HYCHSl+mUqcKGKc00dXS\/RJX6OVY=",
+      "BlazorWasm.dll": "sha256-uQaEoq1\/mLPCW08G209Qnt2vIdqkFS2GeyYS0zgVmAM=",
       "Microsoft.AspNetCore.Components.dll": "sha256-w6DQocvJw0NS6hLQThWLYkKBouDDGTAtIcePS\/lLg4s=",
       "Microsoft.AspNetCore.Components.Web.dll": "sha256-ayazMPuz17Uh6yyOaWTZwxfAFXN4V1Zh\/ma6C\/o9gKo=",
       "Microsoft.AspNetCore.Components.WebAssembly.dll": "sha256-2fbR6RpUxEMnL89Bp4BedWtQJQRpzWAu87gh1UjPAWk=",
@@ -22,7 +22,7 @@
       "Microsoft.Extensions.Primitives.dll": "sha256-YColTWA58whC+8aBjv1O7HgsyYrbHTba601EkNDWAlo=",
       "Microsoft.JSInterop.dll": "sha256-Y+mZtkwT0dpbCAuAOPCY8aVW3AEuRdJw41zE1ePHYew=",
       "Microsoft.JSInterop.WebAssembly.dll": "sha256-tih3TKmOjYrl+o3SczeBm5S8k9z64PGQPF13n7WOKl0=",
-      "Ril.BlazorSignatureCanvas.dll": "sha256-UDtrIorknu\/U0DfPmAPSsnI4OGfzvluGfUfG\/LNpmlI=",
+      "Ril.BlazorSignatureCanvas.dll": "sha256-L95oIF+4PHQlV3kPAJjFNNH3fS1GMo8ia8AYGXIX1yE=",
       "System.Collections.Concurrent.dll": "sha256-LV8UQ7Pzz4bs9QfC23fcyM2QNR2oJHwgZnFBR3ArYOk=",
       "System.Collections.dll": "sha256-cLZERqamRiMa93WbfehMSc+xiagXVOzDGK\/kCeYPY\/E=",
       "System.ComponentModel.dll": "sha256-0wL1XbOGv224hyXbnGmWwnRc11am9UKqeKk+awaJjtY=",
