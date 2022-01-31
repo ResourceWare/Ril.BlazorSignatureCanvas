@@ -40,7 +40,10 @@
     </label>
 </div>
 
-<img src=sc.ToDataURL() alt="rendered png signature" />
+<button @onclick=RefreshPngImage>Refresh Images</button>
+<img src=@pngImage alt="rendered png signature" />
+<pre>@pngImage</pre>
+
 </div>
 
 @code {
@@ -51,8 +54,13 @@
     float maxLineWidth = 10f;
     int throttle = 5;
     
+    string pngImage = "";
 
+    async Task RefreshPngImage() {
+        pngImage = await sc.ToDataURL();
+    }
+     
     async Task ClearSignature() => await sc.Clear();
-    async Task Off() => await sc.Off();
+    async Task Off() => await sc.Off(); 
     async Task On() => await sc.On();
 }
