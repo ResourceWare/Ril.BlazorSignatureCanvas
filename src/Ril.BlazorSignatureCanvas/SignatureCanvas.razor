@@ -150,7 +150,7 @@
         Console.WriteLine("OnStrokeBegin");
     } *@
 
-    protected virtual async ValueTask DisposeAsync() {
+    public async ValueTask DisposeAsync() {
         if (signaturePad is not null) {
             await signaturePad.DisposeAsync();
         }

@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <PackageId>Ril.BlazorSignatureCanvas</PackageId>
-    <Version>0.0.3-alpha</Version>
+    <Version>0.0.4-alpha</Version>
     <PackageTags>Blazor;Javascript;Components</PackageTags>
     <Description>
       A Blazor wrapper component for the SignaturePad javascript library.
