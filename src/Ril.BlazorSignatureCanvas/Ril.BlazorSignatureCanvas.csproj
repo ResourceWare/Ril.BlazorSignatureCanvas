@@ -10,14 +10,11 @@
     <Description>
       A Blazor wrapper component for the SignaturePad javascript library.
     </Description>
+    <Authors>Ian WItham</Authors>
+    <Company>ResourceWare</Company>
   </PropertyGroup>
 
-  <PropertyGroup>
-  </PropertyGroup>
-  <Authors>Ian WItham</Authors>
-  <Company>ResourceWare</Company>
-  </PropertyGroup>
-
+  
   <ItemGroup>
     <SupportedPlatform Include="browser" />
   </ItemGroup>
