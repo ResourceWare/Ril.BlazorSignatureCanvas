@@ -1,6 +1,8 @@
 # Ril.BlazorSignatureCanvas
 A Blazor wrapper component for the [Signature Pad](https://github.com/szimek/signature_pad) JavaScript library, by Szymon Nowak.
 
+[Live Demo](https://resourceware.github.io/Ril.BlazorSignatureCanvas/)
+
 ## Usage
 
 1. [Install the Nuget package](https://www.nuget.org/packages/Ril.BlazorSignatureCanvas)
