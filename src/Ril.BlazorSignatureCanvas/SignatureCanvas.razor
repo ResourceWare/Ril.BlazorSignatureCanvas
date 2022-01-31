@@ -1,3 +1,5 @@
+@implements IAsyncDisposable
+
 <canvas @ref="elem" @attributes="CanvasAttributes" />
 
 @inject IJSRuntime JSRuntime
@@ -147,4 +149,11 @@
     public static OnStrokeBegin() {
         Console.WriteLine("OnStrokeBegin");
     } *@
+
+    protected virtual async ValueTask DisposeAsync() {
+        if (signaturePad is not null) {
+            await signaturePad.DisposeAsync();
+        }
+        signaturePad = null;
+    }
 }
