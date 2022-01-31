@@ -127,7 +127,7 @@
     public Task On() =>
         signaturePad.InvokeVoidAsync("on").AsTask();
 
-    public Task<string> ToDataURL(string? type) =>
+    public Task<string> ToDataURL(string? type = null) =>
         signaturePad.InvokeAsync<string>("ToDataURL", type).AsTask();
 
     public Task ToData() =>
