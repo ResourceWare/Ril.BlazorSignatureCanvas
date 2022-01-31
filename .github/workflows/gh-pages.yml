@@ -19,6 +19,10 @@ jobs:
         dotnet-version: 6.0.x
     - name: Restore dependencies
       run: dotnet restore
+    - name: install npm dependencies
+      run: |
+        cd examples/BlazorWasm/tailwind.css
+        npm install
     - name: Build CSS
       run: |
         cd examples/BlazorWasm/tailwind.css
