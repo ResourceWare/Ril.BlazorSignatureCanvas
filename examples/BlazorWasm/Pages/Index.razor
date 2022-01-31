@@ -1,0 +1,56 @@
+﻿@page "/"
+
+<PageTitle>Index</PageTitle>
+
+<div class="flex flex-col items-start gap-8">
+
+
+<SignatureCanvas
+    class="shadow-md rounded border-2 border-blue-300 bg-blue-100"
+    @ref=sc id="myCanvas" 
+    width="400" height="200"
+    @bind-MinLineWidth=@minLineWidth
+    @bind-MaxLineWidth=@maxLineWidth
+    @bind-PenColor=@penColor
+    @bind-Throttle=@throttle
+    />
+
+<div class="flex flex-col py-8 gap-4 p-4 shadow-md rounded w-auto bg-green-300" >
+    <button class="rounded-full shadow bg-gray-200 hover:bg-gray-300 py-4 py-2" @onclick=ClearSignature>Clear Signature</button>
+
+    <label class="text-center rounded-full shadow bg-gray-200 hover:bg-gray-300 py-4 py-2">Pen Color (@penColor)
+        <input @bind-value=penColor type="color">
+    </label>
+
+    <button class="rounded-full shadow bg-gray-200 hover:bg-gray-300 py-4 py-2" @onclick=Off>Off</button>
+    <button class="rounded-full shadow bg-gray-200 hover:bg-gray-300 py-4 py-2"@onclick=On>On</button>
+
+    <label class="" >
+        Min Pen Width 
+        <input class="rounded-full p-2 shadow-inner bg-gray-100" type="number" @bind-value=minLineWidth />
+    </label>
+
+    <label class=""> 
+        Max Line Width
+        <input class="rounded-full p-2 shadow-inner bg-gray-100" type="number" @bind-value=maxLineWidth />
+    </label>
+    <label>
+        Throttle
+        <input class="rounded-full p-2 shadow-inner bg-gray-100" type="number" @bind-value=throttle />
+    </label>
+</div>
+</div>
+
+@code {
+    SignatureCanvas sc;
+
+    string penColor = "#000000";
+    float minLineWidth = 2.5f;
+    float maxLineWidth = 10f;
+    int throttle = 5;
+    
+
+    async Task ClearSignature() => await sc.Clear();
+    async Task Off() => await sc.Off();
+    async Task On() => await sc.On();
+}

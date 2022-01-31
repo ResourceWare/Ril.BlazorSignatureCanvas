@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <PackageId>Ril.BlazorSignatureCanvas</PackageId>
+    <Version>0.0.1-alpha</Version>
+    <PackageTags>Blazor;Javascript;Components</PackageTags>
+    <Description>
+      A Blazor wrapper component for the SignaturePad javascript library.
+    </Description>
+  </PropertyGroup>
+
+  <PropertyGroup>
+  </PropertyGroup>
+  <Authors>Ian WItham</Authors>
+  <Company>ResourceWare</Company>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.1" />
+  </ItemGroup>
+
+</Project>

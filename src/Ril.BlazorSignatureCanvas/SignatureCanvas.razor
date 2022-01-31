@@ -1,0 +1,145 @@
+<canvas @ref="elem" @attributes="CanvasAttributes" />
+
+@inject IJSRuntime JSRuntime
+@code {
+
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? CanvasAttributes { get; set; }
+
+    
+    /// <summary>
+    /// Radius of a single dot.
+    /// </summary>
+    [Parameter] public float DotSize { get; set; } 
+
+    /// <summary>
+    /// Minimum width of a line. Defaults to <code>0.5</code>.
+    /// </summary>
+    /// <value></value>
+    
+    [Parameter] public float MinLineWidth {get; set;} = 2.5f;
+
+    /// <summary>
+    /// Maximum width of a line. Defaults to <code>2.5</code>.
+    /// </summary>
+    /// <value></value>
+    [Parameter] public float MaxLineWidth {get; set;} = 5f;
+
+    /// <summary>
+    /// Draw the next point at most once per every <code>x</code> milliseconds. Set it to <code>0</code> to turn off throttling. Defaults to <code>16</code>.
+    /// </summary>
+    [Parameter] public int Throttle {get; set;} = 16;
+
+    /// <summary>
+    /// Add the next point only if the previous one is farther than <code>x</code> pixels. Defaults to <code>5</code>.
+    /// </summary>
+    [Parameter] public int MinDistance {get; set;} = 5;
+
+    /// <summary>
+    /// Color used to clear the background. Can be any color format accepted by <code>context.fillStyle</code>. Defaults to <code>"rgba(0,0,0,0)"</code> (transparent black).
+    /// Use a non-transparent color e.g. <code>"rgb(255,255,255)"</code> (opaque white) if you'd like to save signatures as JPEG images.
+    /// </summary>
+    [Parameter] public string BackgroundColor {get; set;} = "rgba(0,0,0,0)";
+
+
+    /// <summary>
+    /// Color used to draw the lines. Can be any color format accepted by <code>context.fillStyle</code>. Defaults to <code>"black"</code>.
+    /// </summary>
+    [Parameter] public string PenColor {get; set;} = "black";
+
+    /// <summary>
+    /// Weight used to modify new velocity based on the previous velocity. Defaults to <code>0.7</code>.
+    /// </summary>
+    [Parameter] public float VelocityFilterWeight { get; set; } = 0.7f;
+
+    ElementReference elem;
+
+    IJSObjectReference signaturePad;
+    DotNetObjectReference<SignatureCanvas> objectReference;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var options = new {
+                dotSize = DotSize,
+                minWidth = MinLineWidth,
+                maxWidth = MaxLineWidth,
+                throttle = Throttle,
+                minDistance = MinDistance,
+                backgroundColor = BackgroundColor,
+                penColor = PenColor,
+                velocityFilterWeight = VelocityFilterWeight
+            };
+
+            signaturePad = await JSRuntime.InvokeAsync<IJSObjectReference>("BlazorSignatureCanvas.CreateSignaturePad", elem, options);
+        }
+    }
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+            if (signaturePad != null) {
+                await UpdateSignaturePadParamsAsync(signaturePad);
+            }
+    }
+
+    Task UpdateSignaturePadParamsAsync(IJSObjectReference signaturePad) {
+        return Task.WhenAll(
+            JSRuntime.InvokeVoidAsync("BlazorSignatureCanvas.SetDotSize", signaturePad, DotSize).AsTask(),
+            JSRuntime.InvokeVoidAsync("BlazorSignatureCanvas.SetMinWidth", signaturePad, MinLineWidth).AsTask(),
+            JSRuntime.InvokeVoidAsync("BlazorSignatureCanvas.SetMaxWidth", signaturePad, MaxLineWidth).AsTask(),
+            JSRuntime.InvokeVoidAsync("BlazorSignatureCanvas.SetThrottle", signaturePad, Throttle).AsTask(),
+            JSRuntime.InvokeVoidAsync("BlazorSignatureCanvas.SetMinDistance", signaturePad, MinDistance).AsTask(),
+            JSRuntime.InvokeVoidAsync("BlazorSignatureCanvas.SetBackgroundColor", signaturePad, BackgroundColor).AsTask(),
+            JSRuntime.InvokeVoidAsync("BlazorSignatureCanvas.SetPenColor", signaturePad, PenColor).AsTask(),
+            JSRuntime.InvokeVoidAsync("BlazorSignatureCanvas.SetVelocityFilterWeight", signaturePad, VelocityFilterWeight).AsTask()
+        );
+    }
+   
+   /// <summary>
+   /// Clears the canvas
+   /// </summary>
+   /// <returns></returns>
+    public Task Clear() =>
+        signaturePad.InvokeVoidAsync("clear").AsTask();
+
+    /// <summary>
+    /// Returns true if canvas is empty, otherwise returns false
+    /// </summary>
+    /// <typeparam name="bool"></typeparam>
+    /// <returns>Task<bool></returns>
+    public Task<bool> IsEmpty() =>
+        signaturePad.InvokeAsync<bool>("isEmpty").AsTask();
+
+    /// <summary>
+    /// Unbinds all event handlers
+    /// </summary>
+    /// <returns></returns>
+    public Task Off() =>
+        signaturePad.InvokeVoidAsync("off").AsTask();
+
+    /// <summary>
+    /// Rebinds all event handlers
+    /// </summary>
+    /// <returns></returns>
+    public Task On() =>
+        signaturePad.InvokeVoidAsync("on").AsTask();
+
+    public Task<string> ToDataURL(string? type) =>
+        signaturePad.InvokeAsync<string>("ToDataURL", type).AsTask();
+
+    public Task ToData() =>
+        throw new NotImplementedException();
+
+    
+    
+
+
+
+    @* [JSInvokable]
+    public static OnStrokeBegin() {
+        Console.WriteLine("OnStrokeBegin");
+    } *@
+}
