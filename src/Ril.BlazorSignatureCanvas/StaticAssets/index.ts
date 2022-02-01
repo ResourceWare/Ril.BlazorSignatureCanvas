@@ -1,4 +1,5 @@
 import SignaturePad from "signature_pad";
+import { fromBase64 } from "@aws-sdk/util-base64-browser";
 
 export default class BlazorSignatureCanvas {
     static CreateSignaturePad  = (elem:HTMLCanvasElement, options) => 
@@ -25,4 +26,11 @@ export default class BlazorSignatureCanvas {
     static SetBackgroundColor = (s: SignaturePad, x: string) => s.backgroundColor = x;
     static SetPenColor = (s: SignaturePad, x: string) => s.penColor = x;
     static SetVelocityFilterWeight = (s: SignaturePad, x: number) => s.velocityFilterWeight = x;
+
+    static ToByteArray = (s : SignaturePad, type : string) => {
+        const dataURL = s.toDataURL(type);
+        const base64string = dataURL.split(",")[1];
+        const bytes = fromBase64(base64string);
+        return bytes;
+    }
 } 

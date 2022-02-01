@@ -1,3 +1,4 @@
+@using System.Runtime.InteropServices
 @implements IAsyncDisposable
 
 <canvas @ref="elem" @attributes="CanvasAttributes" />
@@ -59,6 +60,8 @@
 
     IJSObjectReference signaturePad;
     DotNetObjectReference<SignatureCanvas> objectReference;
+
+    bool IsWebAssembly = RuntimeInformation.IsOSPlatform(OSPlatform.Create("WEBASSEMBLY"));
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -136,6 +139,9 @@
             return "";
         }
     }
+
+    public async Task<byte[]> ToByteArray(string? type = null) =>
+        await JSRuntime.InvokeAsync<byte[]>("BlazorSignatureCanvas.ToByteArray", signaturePad, type);
 
     public Task ToData() =>
         throw new NotImplementedException();

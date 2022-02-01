@@ -42,7 +42,12 @@
 
 <button @onclick=RefreshPngImage>Refresh Images</button>
 <img src=@pngImage alt="rendered png signature" />
-<pre>@pngImage</pre>
+<p>Size of PNG DataURL: @PNGDataURLSize bytes</p>
+<p>Size og PNG ByteArray: @PNGByteArraySize bytes</p>
+<p>Size of JPEG DataURL: @JPEGDataURLSize bytes</p>
+<p>Size og JPEG ByteArray: @JPEGByteArraySize bytes</p>
+<p>Size of SVG DataURL: @SVGDataURLSize bytes</p>
+<p>Size og SVG ByteArray: @SVGDataURLSize bytes</p>
 
 </div>
 
@@ -56,8 +61,28 @@
     
     string pngImage = "";
 
+    int PNGDataURLSize = 0;
+    int PNGByteArraySize = 0;
+    int JPEGDataURLSize = 0;
+    int JPEGByteArraySize = 0;
+    int SVGDataURLSize = 0;
+    int SVGByteArraySize = 0;
+
     async Task RefreshPngImage() {
         pngImage = await sc.ToDataURL();
+        PNGDataURLSize = System.Text.ASCIIEncoding.ASCII.GetByteCount(pngImage);
+        var byteArray = await sc.ToByteArray();
+        PNGByteArraySize = byteArray.Length;
+
+        string jpg = await sc.ToDataURL("image/jpeg");
+        JPEGDataURLSize = System.Text.ASCIIEncoding.ASCII.GetByteCount(jpg);
+        var jpgBytes = await sc.ToByteArray("image/jpeg");
+        JPEGByteArraySize = jpgBytes.Length;
+
+        string svg = await sc.ToDataURL("image/svg+xml");
+        SVGDataURLSize = System.Text.ASCIIEncoding.ASCII.GetByteCount(svg);
+        var svgBytes = await sc.ToByteArray("image/svg+xml");
+        SVGByteArraySize = svgBytes.Length;
     }
      
     async Task ClearSignature() => await sc.Clear();
