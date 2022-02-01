@@ -1,6 +1,790 @@
-var BlazorSignatureCanvas=function(t){var e={};function i(n){if(e[n])return e[n].exports;var s=e[n]={i:n,l:!1,exports:{}};return t[n].call(s.exports,s,s.exports,i),s.l=!0,s.exports}return i.m=t,i.c=e,i.d=function(t,e,n){i.o(t,e)||Object.defineProperty(t,e,{enumerable:!0,get:n})},i.r=function(t){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0})},i.t=function(t,e){if(1&e&&(t=i(t)),8&e)return t;if(4&e&&"object"==typeof t&&t&&t.__esModule)return t;var n=Object.create(null);if(i.r(n),Object.defineProperty(n,"default",{enumerable:!0,value:t}),2&e&&"string"!=typeof t)for(var s in t)i.d(n,s,function(e){return t[e]}.bind(null,s));return n},i.n=function(t){var e=t&&t.__esModule?function(){return t.default}:function(){return t};return i.d(e,"a",e),e},i.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},i.p="",i(i.s=0)}([function(t,e,i){"use strict";e.__esModule=!0;var n=i(1),s=function(){function t(){}return t.CreateSignaturePad=function(t,e){return new n.default(t,e)},t.SetDotSize=function(t,e){return t.dotSize=e},t.SetMinWidth=function(t,e){return t.minWidth=e},t.SetMaxWidth=function(t,e){return t.maxWidth=e},t.SetThrottle=function(t,e){console.log("setting throttle to ",e),t.throttle=e},t.SetMinDistance=function(t,e){return t.minDistance=e},t.SetBackgroundColor=function(t,e){return t.backgroundColor=e},t.SetPenColor=function(t,e){return t.penColor=e},t.SetVelocityFilterWeight=function(t,e){return t.velocityFilterWeight=e},t}();e.default=s},function(t,e,i){"use strict";i.r(e),i.d(e,"default",(function(){return o}));
+var BlazorSignatureCanvas;
+/******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./node_modules/@aws-sdk/util-base64-browser/dist-es/index.js":
+/*!********************************************************************!*\
+  !*** ./node_modules/@aws-sdk/util-base64-browser/dist-es/index.js ***!
+  \********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "fromBase64": () => (/* binding */ fromBase64),
+/* harmony export */   "toBase64": () => (/* binding */ toBase64)
+/* harmony export */ });
+var alphabetByEncoding = {};
+var alphabetByValue = new Array(64);
+for (var i = 0, start = "A".charCodeAt(0), limit = "Z".charCodeAt(0); i + start <= limit; i++) {
+    var char = String.fromCharCode(i + start);
+    alphabetByEncoding[char] = i;
+    alphabetByValue[i] = char;
+}
+for (var i = 0, start = "a".charCodeAt(0), limit = "z".charCodeAt(0); i + start <= limit; i++) {
+    var char = String.fromCharCode(i + start);
+    var index = i + 26;
+    alphabetByEncoding[char] = index;
+    alphabetByValue[index] = char;
+}
+for (var i = 0; i < 10; i++) {
+    alphabetByEncoding[i.toString(10)] = i + 52;
+    var char = i.toString(10);
+    var index = i + 52;
+    alphabetByEncoding[char] = index;
+    alphabetByValue[index] = char;
+}
+alphabetByEncoding["+"] = 62;
+alphabetByValue[62] = "+";
+alphabetByEncoding["/"] = 63;
+alphabetByValue[63] = "/";
+var bitsPerLetter = 6;
+var bitsPerByte = 8;
+var maxLetterValue = 63;
+function fromBase64(input) {
+    var totalByteLength = (input.length / 4) * 3;
+    if (input.substr(-2) === "==") {
+        totalByteLength -= 2;
+    }
+    else if (input.substr(-1) === "=") {
+        totalByteLength--;
+    }
+    var out = new ArrayBuffer(totalByteLength);
+    var dataView = new DataView(out);
+    for (var i = 0; i < input.length; i += 4) {
+        var bits = 0;
+        var bitLength = 0;
+        for (var j = i, limit = i + 3; j <= limit; j++) {
+            if (input[j] !== "=") {
+                if (!(input[j] in alphabetByEncoding)) {
+                    throw new TypeError("Invalid character " + input[j] + " in base64 string.");
+                }
+                bits |= alphabetByEncoding[input[j]] << ((limit - j) * bitsPerLetter);
+                bitLength += bitsPerLetter;
+            }
+            else {
+                bits >>= bitsPerLetter;
+            }
+        }
+        var chunkOffset = (i / 4) * 3;
+        bits >>= bitLength % bitsPerByte;
+        var byteLength = Math.floor(bitLength / bitsPerByte);
+        for (var k = 0; k < byteLength; k++) {
+            var offset = (byteLength - k - 1) * bitsPerByte;
+            dataView.setUint8(chunkOffset + k, (bits & (255 << offset)) >> offset);
+        }
+    }
+    return new Uint8Array(out);
+}
+function toBase64(input) {
+    var str = "";
+    for (var i = 0; i < input.length; i += 3) {
+        var bits = 0;
+        var bitLength = 0;
+        for (var j = i, limit = Math.min(i + 3, input.length); j < limit; j++) {
+            bits |= input[j] << ((limit - j - 1) * bitsPerByte);
+            bitLength += bitsPerByte;
+        }
+        var bitClusterCount = Math.ceil(bitLength / bitsPerLetter);
+        bits <<= bitClusterCount * bitsPerLetter - bitLength;
+        for (var k = 1; k <= bitClusterCount; k++) {
+            var offset = (bitClusterCount - k) * bitsPerLetter;
+            str += alphabetByValue[(bits & (maxLetterValue << offset)) >> offset];
+        }
+        str += "==".slice(0, 4 - bitClusterCount);
+    }
+    return str;
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/signature_pad/dist/signature_pad.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/signature_pad/dist/signature_pad.js ***!
+  \**********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ SignaturePad)
+/* harmony export */ });
 /*!
  * Signature Pad v4.0.2 | https://github.com/szimek/signature_pad
  * (c) 2022 Szymon Nowak | Released under the MIT license
  */
-class n{constructor(t,e,i,n){if(isNaN(t)||isNaN(e))throw new Error(`Point is invalid: (${t}, ${e})`);this.x=+t,this.y=+e,this.pressure=i||0,this.time=n||Date.now()}distanceTo(t){return Math.sqrt(Math.pow(this.x-t.x,2)+Math.pow(this.y-t.y,2))}equals(t){return this.x===t.x&&this.y===t.y&&this.pressure===t.pressure&&this.time===t.time}velocityFrom(t){return this.time!==t.time?this.distanceTo(t)/(this.time-t.time):0}}class s{constructor(t,e,i,n,s,o){this.startPoint=t,this.control2=e,this.control1=i,this.endPoint=n,this.startWidth=s,this.endWidth=o}static fromPoints(t,e){const i=this.calculateControlPoints(t[0],t[1],t[2]).c2,n=this.calculateControlPoints(t[1],t[2],t[3]).c1;return new s(t[1],i,n,t[2],e.start,e.end)}static calculateControlPoints(t,e,i){const s=t.x-e.x,o=t.y-e.y,r=e.x-i.x,h=e.y-i.y,a=(t.x+e.x)/2,d=(t.y+e.y)/2,c=(e.x+i.x)/2,l=(e.y+i.y)/2,u=Math.sqrt(s*s+o*o),v=Math.sqrt(r*r+h*h),m=v/(u+v),_=c+(a-c)*m,p=l+(d-l)*m,g=e.x-_,f=e.y-p;return{c1:new n(a+g,d+f),c2:new n(c+g,l+f)}}length(){let t,e,i=0;for(let n=0;n<=10;n+=1){const s=n/10,o=this.point(s,this.startPoint.x,this.control1.x,this.control2.x,this.endPoint.x),r=this.point(s,this.startPoint.y,this.control1.y,this.control2.y,this.endPoint.y);if(n>0){const n=o-t,s=r-e;i+=Math.sqrt(n*n+s*s)}t=o,e=r}return i}point(t,e,i,n,s){return e*(1-t)*(1-t)*(1-t)+3*i*(1-t)*(1-t)*t+3*n*(1-t)*t*t+s*t*t*t}}class o extends class{constructor(){try{this._et=new EventTarget}catch(t){this._et=document}}addEventListener(t,e,i){this._et.addEventListener(t,e,i)}dispatchEvent(t){return this._et.dispatchEvent(t)}removeEventListener(t,e,i){this._et.removeEventListener(t,e,i)}}{constructor(t,e={}){super(),this.canvas=t,this._handleMouseDown=t=>{1===t.buttons&&(this._drawningStroke=!0,this._strokeBegin(t))},this._handleMouseMove=t=>{this._drawningStroke&&this._strokeMoveUpdate(t)},this._handleMouseUp=t=>{1===t.buttons&&this._drawningStroke&&(this._drawningStroke=!1,this._strokeEnd(t))},this._handleTouchStart=t=>{if(t.preventDefault(),1===t.targetTouches.length){const e=t.changedTouches[0];this._strokeBegin(e)}},this._handleTouchMove=t=>{t.preventDefault();const e=t.targetTouches[0];this._strokeMoveUpdate(e)},this._handleTouchEnd=t=>{if(t.target===this.canvas){t.preventDefault();const e=t.changedTouches[0];this._strokeEnd(e)}},this._handlePointerStart=t=>{this._drawningStroke=!0,t.preventDefault(),this._strokeBegin(t)},this._handlePointerMove=t=>{this._drawningStroke&&(t.preventDefault(),this._strokeMoveUpdate(t))},this._handlePointerEnd=t=>{this._drawningStroke=!1;t.target===this.canvas&&(t.preventDefault(),this._strokeEnd(t))},this.velocityFilterWeight=e.velocityFilterWeight||.7,this.minWidth=e.minWidth||.5,this.maxWidth=e.maxWidth||2.5,this.throttle="throttle"in e?e.throttle:16,this.minDistance="minDistance"in e?e.minDistance:5,this.dotSize=e.dotSize||0,this.penColor=e.penColor||"black",this.backgroundColor=e.backgroundColor||"rgba(0,0,0,0)",this._strokeMoveUpdate=this.throttle?function(t,e=250){let i,n,s,o=0,r=null;const h=()=>{o=Date.now(),r=null,i=t.apply(n,s),r||(n=null,s=[])};return function(...a){const d=Date.now(),c=e-(d-o);return n=this,s=a,c<=0||c>e?(r&&(clearTimeout(r),r=null),o=d,i=t.apply(n,s),r||(n=null,s=[])):r||(r=window.setTimeout(h,c)),i}}(o.prototype._strokeUpdate,this.throttle):o.prototype._strokeUpdate,this._ctx=t.getContext("2d"),this.clear(),this.on()}clear(){const{_ctx:t,canvas:e}=this;t.fillStyle=this.backgroundColor,t.clearRect(0,0,e.width,e.height),t.fillRect(0,0,e.width,e.height),this._data=[],this._reset(),this._isEmpty=!0}fromDataURL(t,e={}){return new Promise((i,n)=>{const s=new Image,o=e.ratio||window.devicePixelRatio||1,r=e.width||this.canvas.width/o,h=e.height||this.canvas.height/o,a=e.xOffset||0,d=e.yOffset||0;this._reset(),s.onload=()=>{this._ctx.drawImage(s,a,d,r,h),i()},s.onerror=t=>{n(t)},s.crossOrigin="anonymous",s.src=t,this._isEmpty=!1})}toDataURL(t="image/png",e){switch(t){case"image/svg+xml":return this._toSVG();default:return this.canvas.toDataURL(t,e)}}on(){this.canvas.style.touchAction="none",this.canvas.style.msTouchAction="none",this.canvas.style.userSelect="none";const t=/Macintosh/.test(navigator.userAgent)&&"ontouchstart"in document;window.PointerEvent&&!t?this._handlePointerEvents():(this._handleMouseEvents(),"ontouchstart"in window&&this._handleTouchEvents())}off(){this.canvas.style.touchAction="auto",this.canvas.style.msTouchAction="auto",this.canvas.style.userSelect="auto",this.canvas.removeEventListener("pointerdown",this._handlePointerStart),this.canvas.removeEventListener("pointermove",this._handlePointerMove),document.removeEventListener("pointerup",this._handlePointerEnd),this.canvas.removeEventListener("mousedown",this._handleMouseDown),this.canvas.removeEventListener("mousemove",this._handleMouseMove),document.removeEventListener("mouseup",this._handleMouseUp),this.canvas.removeEventListener("touchstart",this._handleTouchStart),this.canvas.removeEventListener("touchmove",this._handleTouchMove),this.canvas.removeEventListener("touchend",this._handleTouchEnd)}isEmpty(){return this._isEmpty}fromData(t,{clear:e=!0}={}){e&&this.clear(),this._fromData(t,this._drawCurve.bind(this),this._drawDot.bind(this)),this._data=e?t:this._data.concat(t)}toData(){return this._data}_strokeBegin(t){this.dispatchEvent(new CustomEvent("beginStroke",{detail:t}));const e={dotSize:this.dotSize,minWidth:this.minWidth,maxWidth:this.maxWidth,penColor:this.penColor,points:[]};this._data.push(e),this._reset(),this._strokeUpdate(t)}_strokeUpdate(t){if(0===this._data.length)return void this._strokeBegin(t);this.dispatchEvent(new CustomEvent("beforeUpdateStroke",{detail:t}));const e=t.clientX,i=t.clientY,n=void 0!==t.pressure?t.pressure:void 0!==t.force?t.force:0,s=this._createPoint(e,i,n),o=this._data[this._data.length-1],r=o.points,h=r.length>0&&r[r.length-1],a=!!h&&s.distanceTo(h)<=this.minDistance,{penColor:d,dotSize:c,minWidth:l,maxWidth:u}=o;if(!h||!h||!a){const t=this._addPoint(s);h?t&&this._drawCurve(t,{penColor:d,dotSize:c,minWidth:l,maxWidth:u}):this._drawDot(s,{penColor:d,dotSize:c,minWidth:l,maxWidth:u}),r.push({time:s.time,x:s.x,y:s.y,pressure:s.pressure})}this.dispatchEvent(new CustomEvent("afterUpdateStroke",{detail:t}))}_strokeEnd(t){this._strokeUpdate(t),this.dispatchEvent(new CustomEvent("endStroke",{detail:t}))}_handlePointerEvents(){this._drawningStroke=!1,this.canvas.addEventListener("pointerdown",this._handlePointerStart),this.canvas.addEventListener("pointermove",this._handlePointerMove),document.addEventListener("pointerup",this._handlePointerEnd)}_handleMouseEvents(){this._drawningStroke=!1,this.canvas.addEventListener("mousedown",this._handleMouseDown),this.canvas.addEventListener("mousemove",this._handleMouseMove),document.addEventListener("mouseup",this._handleMouseUp)}_handleTouchEvents(){this.canvas.addEventListener("touchstart",this._handleTouchStart),this.canvas.addEventListener("touchmove",this._handleTouchMove),this.canvas.addEventListener("touchend",this._handleTouchEnd)}_reset(){this._lastPoints=[],this._lastVelocity=0,this._lastWidth=(this.minWidth+this.maxWidth)/2,this._ctx.fillStyle=this.penColor}_createPoint(t,e,i){const s=this.canvas.getBoundingClientRect();return new n(t-s.left,e-s.top,i,(new Date).getTime())}_addPoint(t){const{_lastPoints:e}=this;if(e.push(t),e.length>2){3===e.length&&e.unshift(e[0]);const t=this._calculateCurveWidths(e[1],e[2]),i=s.fromPoints(e,t);return e.shift(),i}return null}_calculateCurveWidths(t,e){const i=this.velocityFilterWeight*e.velocityFrom(t)+(1-this.velocityFilterWeight)*this._lastVelocity,n=this._strokeWidth(i),s={end:n,start:this._lastWidth};return this._lastVelocity=i,this._lastWidth=n,s}_strokeWidth(t){return Math.max(this.maxWidth/(t+1),this.minWidth)}_drawCurveSegment(t,e,i){const n=this._ctx;n.moveTo(t,e),n.arc(t,e,i,0,2*Math.PI,!1),this._isEmpty=!1}_drawCurve(t,e){const i=this._ctx,n=t.endWidth-t.startWidth,s=2*Math.ceil(t.length());i.beginPath(),i.fillStyle=e.penColor;for(let i=0;i<s;i+=1){const o=i/s,r=o*o,h=r*o,a=1-o,d=a*a,c=d*a;let l=c*t.startPoint.x;l+=3*d*o*t.control1.x,l+=3*a*r*t.control2.x,l+=h*t.endPoint.x;let u=c*t.startPoint.y;u+=3*d*o*t.control1.y,u+=3*a*r*t.control2.y,u+=h*t.endPoint.y;const v=Math.min(t.startWidth+h*n,e.maxWidth);this._drawCurveSegment(l,u,v)}i.closePath(),i.fill()}_drawDot(t,e){const i=this._ctx,n=e.dotSize>0?e.dotSize:(e.minWidth+e.maxWidth)/2;i.beginPath(),this._drawCurveSegment(t.x,t.y,n),i.closePath(),i.fillStyle=e.penColor,i.fill()}_fromData(t,e,i){for(const s of t){const{penColor:t,dotSize:o,minWidth:r,maxWidth:h,points:a}=s;if(a.length>1)for(let i=0;i<a.length;i+=1){const s=a[i],d=new n(s.x,s.y,s.pressure,s.time);this.penColor=t,0===i&&this._reset();const c=this._addPoint(d);c&&e(c,{penColor:t,dotSize:o,minWidth:r,maxWidth:h})}else this._reset(),i(a[0],{penColor:t,dotSize:o,minWidth:r,maxWidth:h})}}_toSVG(){const t=this._data,e=Math.max(window.devicePixelRatio||1,1),i=this.canvas.width/e,n=this.canvas.height/e,s=document.createElementNS("http://www.w3.org/2000/svg","svg");s.setAttribute("width",this.canvas.width.toString()),s.setAttribute("height",this.canvas.height.toString()),this._fromData(t,(t,{penColor:e})=>{const i=document.createElement("path");if(!(isNaN(t.control1.x)||isNaN(t.control1.y)||isNaN(t.control2.x)||isNaN(t.control2.y))){const n=`M ${t.startPoint.x.toFixed(3)},${t.startPoint.y.toFixed(3)} C ${t.control1.x.toFixed(3)},${t.control1.y.toFixed(3)} ${t.control2.x.toFixed(3)},${t.control2.y.toFixed(3)} ${t.endPoint.x.toFixed(3)},${t.endPoint.y.toFixed(3)}`;i.setAttribute("d",n),i.setAttribute("stroke-width",(2.25*t.endWidth).toFixed(3)),i.setAttribute("stroke",e),i.setAttribute("fill","none"),i.setAttribute("stroke-linecap","round"),s.appendChild(i)}},(t,{penColor:e,dotSize:i,minWidth:n,maxWidth:o})=>{const r=document.createElement("circle"),h=i>0?i:(n+o)/2;r.setAttribute("r",h.toString()),r.setAttribute("cx",t.x.toString()),r.setAttribute("cy",t.y.toString()),r.setAttribute("fill",e),s.appendChild(r)});const o=`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 ${this.canvas.width} ${this.canvas.height}" width="${i}" height="${n}">`;let r=s.innerHTML;if(void 0===r){const t=document.createElement("dummy"),e=s.childNodes;t.innerHTML="";for(let i=0;i<e.length;i+=1)t.appendChild(e[i].cloneNode(!0));r=t.innerHTML}return"data:image/svg+xml;base64,"+btoa(o+r+"</svg>")}}}]).default;
+
+class Point {
+    constructor(x, y, pressure, time) {
+        if (isNaN(x) || isNaN(y)) {
+            throw new Error(`Point is invalid: (${x}, ${y})`);
+        }
+        this.x = +x;
+        this.y = +y;
+        this.pressure = pressure || 0;
+        this.time = time || Date.now();
+    }
+    distanceTo(start) {
+        return Math.sqrt(Math.pow(this.x - start.x, 2) + Math.pow(this.y - start.y, 2));
+    }
+    equals(other) {
+        return (this.x === other.x &&
+            this.y === other.y &&
+            this.pressure === other.pressure &&
+            this.time === other.time);
+    }
+    velocityFrom(start) {
+        return this.time !== start.time
+            ? this.distanceTo(start) / (this.time - start.time)
+            : 0;
+    }
+}
+
+class Bezier {
+    constructor(startPoint, control2, control1, endPoint, startWidth, endWidth) {
+        this.startPoint = startPoint;
+        this.control2 = control2;
+        this.control1 = control1;
+        this.endPoint = endPoint;
+        this.startWidth = startWidth;
+        this.endWidth = endWidth;
+    }
+    static fromPoints(points, widths) {
+        const c2 = this.calculateControlPoints(points[0], points[1], points[2]).c2;
+        const c3 = this.calculateControlPoints(points[1], points[2], points[3]).c1;
+        return new Bezier(points[1], c2, c3, points[2], widths.start, widths.end);
+    }
+    static calculateControlPoints(s1, s2, s3) {
+        const dx1 = s1.x - s2.x;
+        const dy1 = s1.y - s2.y;
+        const dx2 = s2.x - s3.x;
+        const dy2 = s2.y - s3.y;
+        const m1 = { x: (s1.x + s2.x) / 2.0, y: (s1.y + s2.y) / 2.0 };
+        const m2 = { x: (s2.x + s3.x) / 2.0, y: (s2.y + s3.y) / 2.0 };
+        const l1 = Math.sqrt(dx1 * dx1 + dy1 * dy1);
+        const l2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
+        const dxm = m1.x - m2.x;
+        const dym = m1.y - m2.y;
+        const k = l2 / (l1 + l2);
+        const cm = { x: m2.x + dxm * k, y: m2.y + dym * k };
+        const tx = s2.x - cm.x;
+        const ty = s2.y - cm.y;
+        return {
+            c1: new Point(m1.x + tx, m1.y + ty),
+            c2: new Point(m2.x + tx, m2.y + ty),
+        };
+    }
+    length() {
+        const steps = 10;
+        let length = 0;
+        let px;
+        let py;
+        for (let i = 0; i <= steps; i += 1) {
+            const t = i / steps;
+            const cx = this.point(t, this.startPoint.x, this.control1.x, this.control2.x, this.endPoint.x);
+            const cy = this.point(t, this.startPoint.y, this.control1.y, this.control2.y, this.endPoint.y);
+            if (i > 0) {
+                const xdiff = cx - px;
+                const ydiff = cy - py;
+                length += Math.sqrt(xdiff * xdiff + ydiff * ydiff);
+            }
+            px = cx;
+            py = cy;
+        }
+        return length;
+    }
+    point(t, start, c1, c2, end) {
+        return (start * (1.0 - t) * (1.0 - t) * (1.0 - t))
+            + (3.0 * c1 * (1.0 - t) * (1.0 - t) * t)
+            + (3.0 * c2 * (1.0 - t) * t * t)
+            + (end * t * t * t);
+    }
+}
+
+class SignatureEventTarget {
+    constructor() {
+        try {
+            this._et = new EventTarget();
+        }
+        catch (error) {
+            this._et = document;
+        }
+    }
+    addEventListener(type, listener, options) {
+        this._et.addEventListener(type, listener, options);
+    }
+    dispatchEvent(event) {
+        return this._et.dispatchEvent(event);
+    }
+    removeEventListener(type, callback, options) {
+        this._et.removeEventListener(type, callback, options);
+    }
+}
+
+function throttle(fn, wait = 250) {
+    let previous = 0;
+    let timeout = null;
+    let result;
+    let storedContext;
+    let storedArgs;
+    const later = () => {
+        previous = Date.now();
+        timeout = null;
+        result = fn.apply(storedContext, storedArgs);
+        if (!timeout) {
+            storedContext = null;
+            storedArgs = [];
+        }
+    };
+    return function wrapper(...args) {
+        const now = Date.now();
+        const remaining = wait - (now - previous);
+        storedContext = this;
+        storedArgs = args;
+        if (remaining <= 0 || remaining > wait) {
+            if (timeout) {
+                clearTimeout(timeout);
+                timeout = null;
+            }
+            previous = now;
+            result = fn.apply(storedContext, storedArgs);
+            if (!timeout) {
+                storedContext = null;
+                storedArgs = [];
+            }
+        }
+        else if (!timeout) {
+            timeout = window.setTimeout(later, remaining);
+        }
+        return result;
+    };
+}
+
+class SignaturePad extends SignatureEventTarget {
+    constructor(canvas, options = {}) {
+        super();
+        this.canvas = canvas;
+        this._handleMouseDown = (event) => {
+            if (event.buttons === 1) {
+                this._drawningStroke = true;
+                this._strokeBegin(event);
+            }
+        };
+        this._handleMouseMove = (event) => {
+            if (this._drawningStroke) {
+                this._strokeMoveUpdate(event);
+            }
+        };
+        this._handleMouseUp = (event) => {
+            if (event.buttons === 1 && this._drawningStroke) {
+                this._drawningStroke = false;
+                this._strokeEnd(event);
+            }
+        };
+        this._handleTouchStart = (event) => {
+            event.preventDefault();
+            if (event.targetTouches.length === 1) {
+                const touch = event.changedTouches[0];
+                this._strokeBegin(touch);
+            }
+        };
+        this._handleTouchMove = (event) => {
+            event.preventDefault();
+            const touch = event.targetTouches[0];
+            this._strokeMoveUpdate(touch);
+        };
+        this._handleTouchEnd = (event) => {
+            const wasCanvasTouched = event.target === this.canvas;
+            if (wasCanvasTouched) {
+                event.preventDefault();
+                const touch = event.changedTouches[0];
+                this._strokeEnd(touch);
+            }
+        };
+        this._handlePointerStart = (event) => {
+            this._drawningStroke = true;
+            event.preventDefault();
+            this._strokeBegin(event);
+        };
+        this._handlePointerMove = (event) => {
+            if (this._drawningStroke) {
+                event.preventDefault();
+                this._strokeMoveUpdate(event);
+            }
+        };
+        this._handlePointerEnd = (event) => {
+            this._drawningStroke = false;
+            const wasCanvasTouched = event.target === this.canvas;
+            if (wasCanvasTouched) {
+                event.preventDefault();
+                this._strokeEnd(event);
+            }
+        };
+        this.velocityFilterWeight = options.velocityFilterWeight || 0.7;
+        this.minWidth = options.minWidth || 0.5;
+        this.maxWidth = options.maxWidth || 2.5;
+        this.throttle = ('throttle' in options ? options.throttle : 16);
+        this.minDistance = ('minDistance' in options ? options.minDistance : 5);
+        this.dotSize = options.dotSize || 0;
+        this.penColor = options.penColor || 'black';
+        this.backgroundColor = options.backgroundColor || 'rgba(0,0,0,0)';
+        this._strokeMoveUpdate = this.throttle
+            ? throttle(SignaturePad.prototype._strokeUpdate, this.throttle)
+            : SignaturePad.prototype._strokeUpdate;
+        this._ctx = canvas.getContext('2d');
+        this.clear();
+        this.on();
+    }
+    clear() {
+        const { _ctx: ctx, canvas } = this;
+        ctx.fillStyle = this.backgroundColor;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        this._data = [];
+        this._reset();
+        this._isEmpty = true;
+    }
+    fromDataURL(dataUrl, options = {}) {
+        return new Promise((resolve, reject) => {
+            const image = new Image();
+            const ratio = options.ratio || window.devicePixelRatio || 1;
+            const width = options.width || this.canvas.width / ratio;
+            const height = options.height || this.canvas.height / ratio;
+            const xOffset = options.xOffset || 0;
+            const yOffset = options.yOffset || 0;
+            this._reset();
+            image.onload = () => {
+                this._ctx.drawImage(image, xOffset, yOffset, width, height);
+                resolve();
+            };
+            image.onerror = (error) => {
+                reject(error);
+            };
+            image.crossOrigin = 'anonymous';
+            image.src = dataUrl;
+            this._isEmpty = false;
+        });
+    }
+    toDataURL(type = 'image/png', encoderOptions) {
+        switch (type) {
+            case 'image/svg+xml':
+                return this._toSVG();
+            default:
+                return this.canvas.toDataURL(type, encoderOptions);
+        }
+    }
+    on() {
+        this.canvas.style.touchAction = 'none';
+        this.canvas.style.msTouchAction = 'none';
+        this.canvas.style.userSelect = 'none';
+        const isIOS = /Macintosh/.test(navigator.userAgent) && 'ontouchstart' in document;
+        if (window.PointerEvent && !isIOS) {
+            this._handlePointerEvents();
+        }
+        else {
+            this._handleMouseEvents();
+            if ('ontouchstart' in window) {
+                this._handleTouchEvents();
+            }
+        }
+    }
+    off() {
+        this.canvas.style.touchAction = 'auto';
+        this.canvas.style.msTouchAction = 'auto';
+        this.canvas.style.userSelect = 'auto';
+        this.canvas.removeEventListener('pointerdown', this._handlePointerStart);
+        this.canvas.removeEventListener('pointermove', this._handlePointerMove);
+        document.removeEventListener('pointerup', this._handlePointerEnd);
+        this.canvas.removeEventListener('mousedown', this._handleMouseDown);
+        this.canvas.removeEventListener('mousemove', this._handleMouseMove);
+        document.removeEventListener('mouseup', this._handleMouseUp);
+        this.canvas.removeEventListener('touchstart', this._handleTouchStart);
+        this.canvas.removeEventListener('touchmove', this._handleTouchMove);
+        this.canvas.removeEventListener('touchend', this._handleTouchEnd);
+    }
+    isEmpty() {
+        return this._isEmpty;
+    }
+    fromData(pointGroups, { clear = true } = {}) {
+        if (clear) {
+            this.clear();
+        }
+        this._fromData(pointGroups, this._drawCurve.bind(this), this._drawDot.bind(this));
+        this._data = clear ? pointGroups : this._data.concat(pointGroups);
+    }
+    toData() {
+        return this._data;
+    }
+    _strokeBegin(event) {
+        this.dispatchEvent(new CustomEvent('beginStroke', { detail: event }));
+        const newPointGroup = {
+            dotSize: this.dotSize,
+            minWidth: this.minWidth,
+            maxWidth: this.maxWidth,
+            penColor: this.penColor,
+            points: [],
+        };
+        this._data.push(newPointGroup);
+        this._reset();
+        this._strokeUpdate(event);
+    }
+    _strokeUpdate(event) {
+        if (this._data.length === 0) {
+            this._strokeBegin(event);
+            return;
+        }
+        this.dispatchEvent(new CustomEvent('beforeUpdateStroke', { detail: event }));
+        const x = event.clientX;
+        const y = event.clientY;
+        const pressure = event.pressure !== undefined
+            ? event.pressure
+            : event.force !== undefined
+                ? event.force
+                : 0;
+        const point = this._createPoint(x, y, pressure);
+        const lastPointGroup = this._data[this._data.length - 1];
+        const lastPoints = lastPointGroup.points;
+        const lastPoint = lastPoints.length > 0 && lastPoints[lastPoints.length - 1];
+        const isLastPointTooClose = lastPoint
+            ? point.distanceTo(lastPoint) <= this.minDistance
+            : false;
+        const { penColor, dotSize, minWidth, maxWidth } = lastPointGroup;
+        if (!lastPoint || !(lastPoint && isLastPointTooClose)) {
+            const curve = this._addPoint(point);
+            if (!lastPoint) {
+                this._drawDot(point, {
+                    penColor,
+                    dotSize,
+                    minWidth,
+                    maxWidth,
+                });
+            }
+            else if (curve) {
+                this._drawCurve(curve, {
+                    penColor,
+                    dotSize,
+                    minWidth,
+                    maxWidth,
+                });
+            }
+            lastPoints.push({
+                time: point.time,
+                x: point.x,
+                y: point.y,
+                pressure: point.pressure,
+            });
+        }
+        this.dispatchEvent(new CustomEvent('afterUpdateStroke', { detail: event }));
+    }
+    _strokeEnd(event) {
+        this._strokeUpdate(event);
+        this.dispatchEvent(new CustomEvent('endStroke', { detail: event }));
+    }
+    _handlePointerEvents() {
+        this._drawningStroke = false;
+        this.canvas.addEventListener('pointerdown', this._handlePointerStart);
+        this.canvas.addEventListener('pointermove', this._handlePointerMove);
+        document.addEventListener('pointerup', this._handlePointerEnd);
+    }
+    _handleMouseEvents() {
+        this._drawningStroke = false;
+        this.canvas.addEventListener('mousedown', this._handleMouseDown);
+        this.canvas.addEventListener('mousemove', this._handleMouseMove);
+        document.addEventListener('mouseup', this._handleMouseUp);
+    }
+    _handleTouchEvents() {
+        this.canvas.addEventListener('touchstart', this._handleTouchStart);
+        this.canvas.addEventListener('touchmove', this._handleTouchMove);
+        this.canvas.addEventListener('touchend', this._handleTouchEnd);
+    }
+    _reset() {
+        this._lastPoints = [];
+        this._lastVelocity = 0;
+        this._lastWidth = (this.minWidth + this.maxWidth) / 2;
+        this._ctx.fillStyle = this.penColor;
+    }
+    _createPoint(x, y, pressure) {
+        const rect = this.canvas.getBoundingClientRect();
+        return new Point(x - rect.left, y - rect.top, pressure, new Date().getTime());
+    }
+    _addPoint(point) {
+        const { _lastPoints } = this;
+        _lastPoints.push(point);
+        if (_lastPoints.length > 2) {
+            if (_lastPoints.length === 3) {
+                _lastPoints.unshift(_lastPoints[0]);
+            }
+            const widths = this._calculateCurveWidths(_lastPoints[1], _lastPoints[2]);
+            const curve = Bezier.fromPoints(_lastPoints, widths);
+            _lastPoints.shift();
+            return curve;
+        }
+        return null;
+    }
+    _calculateCurveWidths(startPoint, endPoint) {
+        const velocity = this.velocityFilterWeight * endPoint.velocityFrom(startPoint) +
+            (1 - this.velocityFilterWeight) * this._lastVelocity;
+        const newWidth = this._strokeWidth(velocity);
+        const widths = {
+            end: newWidth,
+            start: this._lastWidth,
+        };
+        this._lastVelocity = velocity;
+        this._lastWidth = newWidth;
+        return widths;
+    }
+    _strokeWidth(velocity) {
+        return Math.max(this.maxWidth / (velocity + 1), this.minWidth);
+    }
+    _drawCurveSegment(x, y, width) {
+        const ctx = this._ctx;
+        ctx.moveTo(x, y);
+        ctx.arc(x, y, width, 0, 2 * Math.PI, false);
+        this._isEmpty = false;
+    }
+    _drawCurve(curve, options) {
+        const ctx = this._ctx;
+        const widthDelta = curve.endWidth - curve.startWidth;
+        const drawSteps = Math.ceil(curve.length()) * 2;
+        ctx.beginPath();
+        ctx.fillStyle = options.penColor;
+        for (let i = 0; i < drawSteps; i += 1) {
+            const t = i / drawSteps;
+            const tt = t * t;
+            const ttt = tt * t;
+            const u = 1 - t;
+            const uu = u * u;
+            const uuu = uu * u;
+            let x = uuu * curve.startPoint.x;
+            x += 3 * uu * t * curve.control1.x;
+            x += 3 * u * tt * curve.control2.x;
+            x += ttt * curve.endPoint.x;
+            let y = uuu * curve.startPoint.y;
+            y += 3 * uu * t * curve.control1.y;
+            y += 3 * u * tt * curve.control2.y;
+            y += ttt * curve.endPoint.y;
+            const width = Math.min(curve.startWidth + ttt * widthDelta, options.maxWidth);
+            this._drawCurveSegment(x, y, width);
+        }
+        ctx.closePath();
+        ctx.fill();
+    }
+    _drawDot(point, options) {
+        const ctx = this._ctx;
+        const width = options.dotSize > 0
+            ? options.dotSize
+            : (options.minWidth + options.maxWidth) / 2;
+        ctx.beginPath();
+        this._drawCurveSegment(point.x, point.y, width);
+        ctx.closePath();
+        ctx.fillStyle = options.penColor;
+        ctx.fill();
+    }
+    _fromData(pointGroups, drawCurve, drawDot) {
+        for (const group of pointGroups) {
+            const { penColor, dotSize, minWidth, maxWidth, points } = group;
+            if (points.length > 1) {
+                for (let j = 0; j < points.length; j += 1) {
+                    const basicPoint = points[j];
+                    const point = new Point(basicPoint.x, basicPoint.y, basicPoint.pressure, basicPoint.time);
+                    this.penColor = penColor;
+                    if (j === 0) {
+                        this._reset();
+                    }
+                    const curve = this._addPoint(point);
+                    if (curve) {
+                        drawCurve(curve, {
+                            penColor,
+                            dotSize,
+                            minWidth,
+                            maxWidth,
+                        });
+                    }
+                }
+            }
+            else {
+                this._reset();
+                drawDot(points[0], {
+                    penColor,
+                    dotSize,
+                    minWidth,
+                    maxWidth,
+                });
+            }
+        }
+    }
+    _toSVG() {
+        const pointGroups = this._data;
+        const ratio = Math.max(window.devicePixelRatio || 1, 1);
+        const minX = 0;
+        const minY = 0;
+        const maxX = this.canvas.width / ratio;
+        const maxY = this.canvas.height / ratio;
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('width', this.canvas.width.toString());
+        svg.setAttribute('height', this.canvas.height.toString());
+        this._fromData(pointGroups, (curve, { penColor }) => {
+            const path = document.createElement('path');
+            if (!isNaN(curve.control1.x) &&
+                !isNaN(curve.control1.y) &&
+                !isNaN(curve.control2.x) &&
+                !isNaN(curve.control2.y)) {
+                const attr = `M ${curve.startPoint.x.toFixed(3)},${curve.startPoint.y.toFixed(3)} ` +
+                    `C ${curve.control1.x.toFixed(3)},${curve.control1.y.toFixed(3)} ` +
+                    `${curve.control2.x.toFixed(3)},${curve.control2.y.toFixed(3)} ` +
+                    `${curve.endPoint.x.toFixed(3)},${curve.endPoint.y.toFixed(3)}`;
+                path.setAttribute('d', attr);
+                path.setAttribute('stroke-width', (curve.endWidth * 2.25).toFixed(3));
+                path.setAttribute('stroke', penColor);
+                path.setAttribute('fill', 'none');
+                path.setAttribute('stroke-linecap', 'round');
+                svg.appendChild(path);
+            }
+        }, (point, { penColor, dotSize, minWidth, maxWidth }) => {
+            const circle = document.createElement('circle');
+            const size = dotSize > 0 ? dotSize : (minWidth + maxWidth) / 2;
+            circle.setAttribute('r', size.toString());
+            circle.setAttribute('cx', point.x.toString());
+            circle.setAttribute('cy', point.y.toString());
+            circle.setAttribute('fill', penColor);
+            svg.appendChild(circle);
+        });
+        const prefix = 'data:image/svg+xml;base64,';
+        const header = '<svg' +
+            ' xmlns="http://www.w3.org/2000/svg"' +
+            ' xmlns:xlink="http://www.w3.org/1999/xlink"' +
+            ` viewBox="${minX} ${minY} ${this.canvas.width} ${this.canvas.height}"` +
+            ` width="${maxX}"` +
+            ` height="${maxY}"` +
+            '>';
+        let body = svg.innerHTML;
+        if (body === undefined) {
+            const dummy = document.createElement('dummy');
+            const nodes = svg.childNodes;
+            dummy.innerHTML = '';
+            for (let i = 0; i < nodes.length; i += 1) {
+                dummy.appendChild(nodes[i].cloneNode(true));
+            }
+            body = dummy.innerHTML;
+        }
+        const footer = '</svg>';
+        const data = header + body + footer;
+        return prefix + btoa(data);
+    }
+}
+
+
+//# sourceMappingURL=signature_pad.js.map
+
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/************************************************************************/
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
+(() => {
+var exports = __webpack_exports__;
+/*!******************!*\
+  !*** ./index.ts ***!
+  \******************/
+
+exports.__esModule = true;
+var signature_pad_1 = __webpack_require__(/*! signature_pad */ "./node_modules/signature_pad/dist/signature_pad.js");
+var util_base64_browser_1 = __webpack_require__(/*! @aws-sdk/util-base64-browser */ "./node_modules/@aws-sdk/util-base64-browser/dist-es/index.js");
+var BlazorSignatureCanvas = /** @class */ (function () {
+    function BlazorSignatureCanvas() {
+    }
+    BlazorSignatureCanvas.CreateSignaturePad = function (elem, options) {
+        return new signature_pad_1["default"](elem, options);
+    };
+    // static SetOptionsAsync = (s: SignaturePad, options) => {
+    //     s.minWidth = options.minWith;
+    //     s.maxWidth = options.maxWidth;
+    //     s.throttle = options.throttle;
+    //     s.minDistance = options.minDistance;
+    //     s.backgroundColor = options.backgroundColor;
+    //     s.penColor = options.penColor;
+    //     s.velocityFilterWeight = options.velocityFilterWeight;
+    // }
+    BlazorSignatureCanvas.SetDotSize = function (s, x) { return s.dotSize = x; };
+    BlazorSignatureCanvas.SetMinWidth = function (s, x) { return s.minWidth = x; };
+    BlazorSignatureCanvas.SetMaxWidth = function (s, x) { return s.maxWidth = x; };
+    BlazorSignatureCanvas.SetThrottle = function (s, x) {
+        console.log("setting throttle to ", x);
+        s.throttle = x;
+    };
+    BlazorSignatureCanvas.SetMinDistance = function (s, x) { return s.minDistance = x; };
+    BlazorSignatureCanvas.SetBackgroundColor = function (s, x) { return s.backgroundColor = x; };
+    BlazorSignatureCanvas.SetPenColor = function (s, x) { return s.penColor = x; };
+    BlazorSignatureCanvas.SetVelocityFilterWeight = function (s, x) { return s.velocityFilterWeight = x; };
+    BlazorSignatureCanvas.ToByteArray = function (s, type) {
+        var dataURL = s.toDataURL(type);
+        var base64string = dataURL.split(",")[1];
+        var bytes = (0, util_base64_browser_1.fromBase64)(base64string);
+        return bytes;
+    };
+    return BlazorSignatureCanvas;
+}());
+exports["default"] = BlazorSignatureCanvas;
+
+})();
+
+BlazorSignatureCanvas = __webpack_exports__["default"];
+/******/ })()
+;
+//# sourceMappingURL=BlazorSignatureCanvas.js.map
