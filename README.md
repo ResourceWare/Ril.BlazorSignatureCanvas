@@ -9,11 +9,10 @@ A Blazor wrapper component for the [Signature Pad](https://github.com/szimek/sig
 
 2. Link the static JavaScript resource. Add the following to your Blazor host page (Index.html, _Host.cshtml, or whatever your case may be): 
     ```
-    <src="/_content/Ril.BlazorSignatureCanvas/BlazorSignatureCanvas.js"></  script>
+    <script src="/_content/Ril.BlazorSignatureCanvas/BlazorSignatureCanvas.js"></ script>
     ```
-    Note, there are no CSS resources to add. This is a purely headless endeavour.
 
-3. Use the component. You'll probably want to capture a reference (<code>@ref</code>) to do anything useful. A bare-bones example may look like this:
+3. Use the component. You'll probably want to capture a reference (```@ref```) to do anything useful such as saving a signature. A bare-bones example may look like this:
     ```
     <SignatureCanvas
         class="my-special-styling-class"
@@ -43,7 +42,7 @@ A Blazor wrapper component for the [Signature Pad](https://github.com/szimek/sig
 ## Tips
 
 ### Blazor Server Message Size
-The returned value from any JSInterop call needs to be asynchronously sent back to the SignatureCanvas component (which, for Blazor Server apps, lives on the server) via a SignalR message. It is quite possible for a DataURL to exceed the maximum 32kb SignalR message size for signatures of sufficient size and/or complexity, resulting in a disconnected circuit and the dreaded "reconnecting to server" message. This is _not_ an issue for Blazor WebAssembly apps.
+The returned value from any JSInterop call needs to be asynchronously sent back to the SignatureCanvas component (which, for Blazor Server apps, lives on the server) via a SignalR message. It is quite possible for a DataURL to exceed the maximum 32kb SignalR message size for signatures of sufficient size and/or complexity, resulting in a disconnected circuit and the dreaded "reconnecting to server" message. Happily, this is _not_ an issue for Blazor WebAssembly apps.
 
 If you encounter this issue, and reducing the signature size is not an option, the maximum SignalR message size can be configured in your ```Program.js``` file as follows:
 
