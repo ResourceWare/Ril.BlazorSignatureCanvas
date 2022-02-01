@@ -44,7 +44,7 @@ A Blazor wrapper component for the [Signature Pad](https://github.com/szimek/sig
 ### Blazor Server Message Size
 The returned value from any JSInterop call needs to be asynchronously sent back to the SignatureCanvas component (which, for Blazor Server apps, lives on the server) via a SignalR message. It is quite possible for a DataURL to exceed the maximum 32kb SignalR message size for signatures of sufficient size and/or complexity, resulting in a disconnected circuit and the dreaded "reconnecting to server" message. Happily, this is _not_ an issue for Blazor WebAssembly apps.
 
-If you encounter this issue, **the simplest fix is to use JPEG in place of PNG**, which is a tiny fraction of the size. Calling ```.ToDataURL("image/jpeg")``` will achieve this.
+If you encounter this issue, **the simplest fix is to use JPEG in place of PNG**, which can be a tiny fraction of the size. Calling ```.ToDataURL("image/jpeg")``` will achieve this. I have found that using multiple colors in a signature can also inflate the size of a JPEG to be comparable to PNG, so you may not want to give users a color picker for their signature.
 
 If JPEG is not an option, or you are still experiencing issues, the maximum SignalR message size can be configured in your ```Program.js``` file as follows:
 
